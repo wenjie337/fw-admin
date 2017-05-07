@@ -35,8 +35,8 @@ public class WebUserService {
      * 更新
      * @param taskVo
      */
-    public void updateWebTask(WebUserVo vo) {
-        webUserMapper.updateWebTask(vo);
+    public void updateWebUser(WebUserVo vo) {
+        webUserMapper.updateWebUser(vo);
     }
 
 }

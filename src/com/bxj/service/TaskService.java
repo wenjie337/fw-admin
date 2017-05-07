@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bxj.mapper.TaskMapper;
 import com.bxj.mapper.TaskWebUserMapper;
+import com.bxj.mapper.WebUserMapper;
 import com.bxj.model.task.TaskVo;
 import com.bxj.model.task.TaskWebUserVo;
+import com.bxj.model.task.WebUserVo;
 
 @Service
 public class TaskService {
@@ -23,7 +25,9 @@ public class TaskService {
     private TaskMapper taskMapper;
     @Autowired
     private TaskWebUserMapper taskWebUserMapper;
-
+    @Autowired
+    private WebUserMapper webUserMapper;
+ 
     @Resource(name = "requestAsyncExecutorSvc")
     private AsyncTaskExecutor executor;
 
@@ -74,8 +78,15 @@ public class TaskService {
                     // TODO
                     try {
                         taskExecutorService.start(vo, userVo);
+                        //将任务用户置为已发布
                         userVo.setStatus(1);
                         taskWebUserMapper.update(userVo);
+                        
+                        //将用户表中用户状态设置为已发布
+                        WebUserVo wvo = new WebUserVo();
+                        wvo.setUserId(userVo.getUserId());
+                        wvo.setStatus(1);
+                        webUserMapper.updateWebUser(wvo);
                     }catch (Exception e){
                         e.printStackTrace();
                     }

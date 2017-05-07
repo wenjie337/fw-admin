@@ -23,6 +23,6 @@ public interface WebUserMapper {
      * 更新
      * @param taskVo
      */
-    public void updateWebTask(WebUserVo vo);
+    public void updateWebUser(WebUserVo vo);
 
 }
