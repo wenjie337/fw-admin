@@ -1,0 +1,84 @@
+.ace-thumbnails > li, .ace-thumbnails > li > *:first-child {
+    display: block;
+    position: relative;
+}
+.ace-thumbnails > li > .tools, .ace-thumbnails > li > *:first-child > .text {
+    background-color: rgba(0, 0, 0, 0.55);
+    position: absolute;
+    text-align: left;
+}
+.ace-thumbnails > li > .tools {
+    bottom: 0;
+    left: -30px;
+    top: 0;
+    transition: all 0.2s ease 0s;
+    vertical-align: middle;
+    width: 24px;
+}
+.ace-thumbnails > li > .tools.tools-right {
+    left: auto;
+    right: -30px;
+}
+.ace-thumbnails > li > .tools.tools-bottom {
+    bottom: -30px;
+    height: auto;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: auto;
+    padding:3px;
+}
+.ace-thumbnails > li > .tools.tools-top {
+    bottom: auto;
+    height: 36px;
+    left: 0;
+    right: 0;
+    top: -30px;
+    width: auto;
+}
+.grid-item:hover > .tools {
+    left: 0;
+    right: 0;
+}
+.grid-item:hover > .tools.tools-bottom {
+    bottom: 0;
+    top: auto;
+}
+.grid-item:hover > .tools.tools-top {
+    bottom: auto;
+    top: 0;
+}
+.grid-item:hover > .tools.tools-right {
+    left: auto;
+    right: 0;
+}
+.ace-thumbnails > li > .in.tools {
+    left: 0;
+    right: 0;
+}
+.ace-thumbnails > li > .in.tools.tools-bottom {
+    bottom: 0;
+    top: auto;
+}
+.ace-thumbnails > li > .in.tools.tools-top {
+    bottom: auto;
+    top: 0;
+}
+.ace-thumbnails > li > .in.tools.tools-right {
+    left: auto;
+    right: 0;
+}
+.ace-thumbnails > li > .tools > a, .ace-thumbnails > li > *:first-child .inner a {
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 0 4px;
+}
+.ace-thumbnails > li > .tools > a:hover, .ace-thumbnails > li > *:first-child .inner a:hover {
+    color: #c9e2ea;
+    text-decoration: none;
+}
+.grid-item .tools.tools-bottom > a, .grid-item .tools.tools-top > a {
+    display: inline-block;
+}

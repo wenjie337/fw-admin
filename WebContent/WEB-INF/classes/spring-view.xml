@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+        
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" lazy-init="false">
+		<property name="contentType" value="text/html; charset=UTF-8"/>
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="requestContextAttribute" value="rc" />
+		<property name="suffix" value=".ftl" />
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+	    <!-- 定义默认的异常处理页面，当该异常类型的注册时使用 -->  
+	    <property name="defaultErrorView" value="error"></property>  
+	    <!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception -->  
+	    <property name="exceptionAttribute" value="ex"></property>  
+	    <!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->  
+	    <property name="exceptionMappings">  
+	        <props>  
+	            <prop key="IOException">error/ioexp</prop>  
+	            <prop key="java.sql.SQLException">error/sqlexp</prop>  
+	        </props>  
+	    </property>  
+	</bean>
+	
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="freemarkerVariables">
+			<map>
+			</map>
+		</property>
+		<property name="templateLoaderPaths">
+			<list>
+				<value>/page/</value>
+				<value>/common/</value><!-- decorators ftl path -->
+			</list>
+		</property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="tag_syntax">auto_detect</prop>
+				<prop key="template_update_delay">0</prop>
+				<prop key="default_encoding">UTF-8</prop>
+				<prop key="url_escaping_charset">UTF-8</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="boolean_format">true,false</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="date_format">yyyy-MM-dd</prop>
+				<prop key="time_format">HH:mm:ss</prop>
+				<prop key="number_format">0.######</prop>
+				<prop key="whitespace_stripping">true</prop>
+				<prop key="classic_compatible">true</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

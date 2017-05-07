@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="yy-admin" basedir="." default="all" xmlns:ivy="antlib:fr.jayasoft.ivy.ant">
+
+    <target name="init">
+        <property environment="env"/>
+        <property name="src.dir" value="src"/>
+    	<property name="classes.dir" value="./WebContent/WEB-INF/classes"/>
+        <property name="lib.dir" value="lib"/>
+        <property name="build.dir" value="build"/>
+    	<property name="build.javadoc" value="./WebContent/doc"/>
+		<property name="distrib.dir" value="WebContent"/>
+    </target>
+	
+	<target name="classpath">
+        <path id="local.class.path">
+            <fileset dir="./WebContent/WEB-INF/lib" includes="*.jar"/>
+        	<fileset file="C:/Works/Program Files/apache-tomcat-7.0.63/lib/servlet-api.jar" />
+        </path>
+    </target>
+	
+    <target name="build" depends="classpath,prepare">
+    	<javac debug="on" source="1.7" deprecation="on" destdir="${build.dir}/classes" encoding="UTF-8" includeantruntime="on">
+            <classpath>
+                <path refid="local.class.path"/>
+            </classpath>
+            <src path="${src.dir}/com/bxj"/>
+        </javac>
+    </target>
+	
+	<target name="prepare" depends="clean-lib">
+	        <mkdir dir="${build.dir}/classes"/>
+	        <mkdir dir="${build.dir}/lib"/>
+	</target>
+	
+	<target name="clean" depends="clean-lib">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="clean-lib" depends="init">
+        <delete dir="${build.dir}/lib"/>
+    </target>
+
+    <target name="jar" depends="jar-webadmin">       
+    </target>
+	
+	<target name="jar-webadmin" depends="build">
+	    <jar jarfile="./WebContent/WEB-INF/lib/yy-admin-1.0.jar" basedir="${build.dir}/classes"/>
+	</target>
+	
+    <target name="javadoc" depends="build">
+    	<mkdir dir="${build.javadoc}"/>
+    	<javadoc packagenames="${packages}" 
+    		sourcepath="${src.dir}"
+    		destdir="${build.javadoc}"
+    		author="true"
+    		version="true"
+    		use="true"
+    		splitindex="true"
+    		windowtitle="JGG API"
+    		doctitle="JGG"
+    		encoding="utf-8" locale="en_US">
+    		<classpath refid="local.class.path"/>
+    	</javadoc>
+    </target>
+	
+	<target name="all" depends="jar"
+	   description="Clean build and dist directories, then compile"/>
+
+
+	<target name="test">
+		<echo message="${ant.project.name}"></echo>
+	</target>
+   
+</project>

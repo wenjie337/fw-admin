@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxj.mapper.TaskMapper">
+	<resultMap type="com.bxj.model.task.TaskVo" id="resultMap">
+		<result column="TASK_ID" property="taskId"/>
+		<result column="TASK_NAME" property="taskName"/>
+		<result column="SOURCE" property="source"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="LAST_UPDATE_TIME" property="lastUpdateTime"/>
+		<result column="status" property="status"/>
+		<result column="send_url" property="sendUrl"/>
+		<result column="xiaoqu" property="xiaoqu"/>
+		<result column="huxingshi" property="huxingshi"/>
+		<result column="huxingting" property="huxingting"/>
+		<result column="huxingwei" property="huxingwei"/>
+		<result column="area" property="area"/>
+		<result column="floor" property="floor"/>
+		<result column="zonglouceng" property="zonglouceng"/>
+		<result column="minPrice" property="minPrice"/>
+		<result column="fukuanfangshi" property="fukuanfangshi"/>
+		<result column="title" property="title"/>
+		<result column="room_desc" property="roomDesc"/>
+		<result column="roomImg" property="roomImg"/>
+		<result column="goblianxiren" property="goblianxiren"/>
+		<result column="phone" property="phone"/>
+	</resultMap>
+	
+	<sql id="selectTask">
+		select task_id,task_name,source,DATE_FORMAT(CREATE_TIME,'%Y-%m-%d %T') CREATE_TIME,DATE_FORMAT(LAST_UPDATE_TIME,'%Y-%m-%d %T') LAST_UPDATE_TIME,status,
+		send_url,xiaoqu,huxingshi,huxingting,huxingwei,area,floor,zonglouceng,minPrice,fukuanfangshi,title,room_desc,roomImg,goblianxiren,phone
+		from t_web_task
+	</sql>
+	
+	<select id="queryList" resultMap="resultMap">
+		<include refid="selectTask"></include>
+		
+	</select>
+	
+	<select id="queryListByStatus" resultMap="resultMap">
+		<include refid="selectTask"></include>
+		where status = 1
+	</select>
+	
+	<insert id="addTask"  useGeneratedKeys="true" keyProperty="taskId" >
+		insert into t_web_task (task_name,source,create_time,LAST_UPDATE_TIME,send_url,xiaoqu,huxingshi,huxingting,huxingwei,area,floor,zonglouceng,minPrice,fukuanfangshi,title,room_desc,roomImg,goblianxiren,phone) 
+		values(#{taskName},#{source},now(),now(),#{sendUrl},#{xiaoqu},#{huxingshi},#{huxingting},#{huxingwei},#{area},#{floor},#{zonglouceng},#{minPrice},#{fukuanfangshi},#{title},#{roomDesc},#{roomImg},#{goblianxiren},#{phone})
+	</insert>
+	
+	<select id="queryTask" resultMap="resultMap">
+		<include refid="selectTask"></include>
+		  where task_id=#{taskId}
+	</select>
+	
+	<update id="updateTask">
+		update t_web_task set 
+		last_update_time=now()
+		<if test='taskName !=null and taskName != ""'>
+			,task_name = #{taskName}
+		</if>
+		<if test='source !=null and source != ""'>
+			,source = #{source}
+		</if>
+		<if test='status !=null and status != ""'>
+			,status = #{status}
+		</if>
+		where task_id=#{taskId}
+	</update>
+	
+	<delete id="delTask">
+		delete from t_web_task where task_id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+	</delete>
+	
+	
+</mapper>

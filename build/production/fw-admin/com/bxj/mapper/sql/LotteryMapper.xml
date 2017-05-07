@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxj.mapper.LotteryMapper">
+	<resultMap type="com.bxj.model.lottery.LotteryVo" id="resultMap">
+		<result column="activity_id" property="activityId"/>
+		<result column="user_id" property="userId"/>
+		<result column="nick_name" property="nickName"/>
+		<result column="lottery_id" property="lotteryId"/>
+		<result column="way_name" property="wayName"/>
+		<result column="way_bill" property="wayBill"/>
+		<result column="consignee" property="consignee"/>
+		<result column="receive_address" property="receiveAddress"/>
+		<result column="mobile" property="mobile"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<select id="query" resultMap="resultMap">
+		select activity_id,user_id,nick_name,lottery_id,way_name,way_bill,consignee,receive_address,mobile,status
+		from t_lottery
+		where activity_id=#{activityId}
+	</select>
+	
+	<update id="update" >
+		update t_lottery set status=#{status}
+		<if test="wayName != null">
+			,way_name=#{wayName}
+		</if>
+		<if test="wayBill != null">
+			,way_bill = #{wayBill}
+		</if>
+		where lottery_id = #{lotteryId}
+	</update>
+	
+	
+</mapper>

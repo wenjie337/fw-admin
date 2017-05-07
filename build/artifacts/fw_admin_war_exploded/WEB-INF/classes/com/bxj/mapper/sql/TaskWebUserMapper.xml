@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxj.mapper.TaskWebUserMapper">
+	<resultMap type="com.bxj.model.task.TaskWebUserVo" id="resultMap">
+		<result column="TASK_WEBUSER_ID" property="taskWebUserId"/>
+		<result column="TASK_ID" property="taskId"/>
+		<result column="USER_ID" property="userId"/>
+		<result column="STATUS" property="status"/>
+		<result column="USER_NAME" property="userName"/>
+		<result column="PWD" property="pwd"/>
+		
+	</resultMap>
+	
+	
+	<select id="queryList" resultMap="resultMap">
+		select t.*,u.user_name,u.pwd from t_web_task_user t
+		join t_web_user u on t.user_id = u.user_id
+		 where t.task_id=#{taskId}
+		
+	</select>
+	
+	<insert id="add" >
+		
+		insert into t_web_task_user (task_id,user_id) 
+		values
+		<foreach collection="ids" item="item" index="index" separator=",">
+			(#{taskId},#{item})
+		</foreach>
+	</insert>
+	
+	<update id="update" >
+		UPDATE  t_web_task_user SET status = #{status} WHERE TASK_ID=#{taskId} AND USER_ID=#{userId}
+
+	</update>
+	
+	
+</mapper>

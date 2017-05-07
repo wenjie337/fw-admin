@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+	<!-- 注解扫描包 -->
+	<context:component-scan base-package="com.bxj" use-default-filters="false">
+		<context:include-filter type="annotation"
+            expression="org.springframework.stereotype.Controller" />
+        <!--     
+        <context:exclude-filter type="regex" expression="com.bxj.mongo.*" />
+         -->
+	</context:component-scan>
+
+	<!-- 开启注解 -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+
+	<!--
+		配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理，3.04新增功能，需要重新设置spring-mvc-3.0.xsd
+	-->
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/html/**" location="/html/" />
+
+	<mvc:interceptors>  
+        <mvc:interceptor>   
+        	<mvc:mapping path="/*/*.htm"/> 
+            <mvc:mapping path="/*.htm"/>    
+            <bean class="com.bxj.interceptor.ParameterInterceptor" />   
+        </mvc:interceptor>
+
+		<!--<mvc:interceptor>
+			<mvc:mapping path="/*.htm"/>
+			<mvc:mapping path="/*/*.htm"/>
+			<bean class="com.bxj.interceptor.PermissionInterceptor"/>
+		</mvc:interceptor>-->
+
+	</mvc:interceptors>
+
+	<!-- 定义跳转的文件的前后缀 ，视图模式配置-->
+	<!-- 
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/page/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	 -->
+	
+	<!-- org.springframework.web.multipart.commons.CommonsMultipartResolver --> 
+	<bean id="multipartResolver" class="com.bxj.filter.CustomMultipartResolver">  
+	    <property name="maxUploadSize" value="10485760" />  
+	</bean>
+
+	<!-- spring4 依赖的jackson版本 不一样， spring 配置也不一样 -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false" />
+		<property name="favorParameter" value="true" />
+		<property name="mediaTypes" >
+			<value>
+				json=application/json
+				xml=application/xml
+			</value>
+		</property>
+	</bean>
+
+</beans>

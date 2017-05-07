@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="
+	    http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/data/mongo
+		http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+
+   <!-- 异步处理线程池 -->
+	<bean id="requestAsyncExecutorSvc" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" /><!--最小线程数 -->
+		<property name="maxPoolSize" value="100" /><!--最大线程数 -->
+		<property name="queueCapacity" value="1000" /><!--缓冲队列大小 -->
+		<property name="keepAliveSeconds" value="300" /><!--线程池中空闲线程的存活时间单位秒 -->
+		<property name="threadNamePrefix" value="req-asyn-" /><!--线程池中产生的线程名字前缀 -->
+		<property name="rejectedExecutionHandler">
+			<bean class="com.bxj.async.PaymentDiscardPolicy" />
+		</property>
+	</bean>
+</beans>

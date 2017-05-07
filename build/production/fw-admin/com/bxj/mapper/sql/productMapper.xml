@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxj.mapper.ProductMapper">
+	<resultMap type="ProductVo" id="resultMap">
+		<result column="PRODUCT_ID" property="productId"/>
+		<result column="PRODUCT_NAME" property="productName"/>
+		<result column="PRODUCT_DESC" property="productDesc"/>
+		<result column="PRODUCT_IMG" property="productImg"/>
+		<result column="PRICE" property="price"/>
+		<result column="PEOPLE_COUNT" property="peopleCount"/>
+		<result column="create_time" property="createTime"/>
+		<result column="LAST_UPDATE_TIME" property="lastUpdateTime"/>
+		<result column="STATUS" property="status"/>
+		<result column="BANNER_IMG" property="bannerImg"/>
+		<result column="DETAIL_IMG" property="detailImg"/>
+	</resultMap>
+	
+	<select id="queryList" resultMap="resultMap">
+		select product_id,product_name,product_desc,price,people_count,create_time,last_update_time,status,banner_img,detail_img,
+		case when (select count(*) from t_activity where p.product_id = product_id and status = 1) > 0
+		then 1 else 0  end isActivity
+		from t_product p
+		
+	</select>
+	
+	<insert id="addProduct" >
+		insert into t_product (product_name,product_desc,product_img,price,people_count,create_time,last_update_time,banner_img,detail_img) 
+		values(#{productName},#{productDesc},#{productImg},#{price},#{peopleCount},SYSDATE(),SYSDATE(),#{bannerImg},#{detailImg})
+	</insert>
+	
+	<select id="queryProduct" resultMap="resultMap">
+		select product_id,product_name,product_desc,product_img,price,people_count ,create_time,last_update_time,status,banner_img,detail_img
+		from  t_product  where product_id=#{productId}
+	</select>
+	
+	<update id="updateProduct">
+		update t_product set 
+		last_update_time=SYSDATE()
+		<if test='productName !=null and productName != ""'>
+			,product_name = #{productName}
+		</if>
+		<if test='productDesc !=null and productDesc != ""'>
+			,product_desc = #{productDesc}
+		</if>
+		<if test='productImg !=null and productImg != ""'>
+			,product_img = #{productImg}
+		</if>
+		<if test="price > 0">
+			,price = #{price}
+		</if>
+		<if test="peopleCount > 0">
+			,people_count = #{peopleCount}
+		</if>
+		<if test="status > -1">
+			,status = #{status}
+		</if> 
+		<if test='bannerImg !=null and bannerImg != ""'>
+			,banner_img = #{bannerImg}
+		</if>
+		<if test='detailImg !=null and detailImg != ""'>
+			,detail_img = #{detailImg}
+		</if>
+		where product_id=#{productId}
+	</update>
+	
+	<delete id="delProduct">
+		delete from t_product where product_id in
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+	</delete>
+	
+	
+	<!--t_product_info-->
+	<select id="queryGoodsInfoById" resultType="GoodsInfo" parameterType="int">
+		SELECT id,goods_id goodsId,info_type infoType,info_img infoImg,info_index infoIndex,created_tm createTime,updated_tm updateTime
+		,img_width imgWidth,img_height imgHeight
+		FROM t_product_info WHERE goods_id=#{id} ORDER BY info_type,info_index
+	</select>
+	<update id="updateGoodsInfo" parameterType="GoodsInfo">
+		UPDATE t_product_info SET info_type=#{infoType},info_img=#{infoImg},img_width=#{imgWidth},img_height=#{imgHeight}
+		,info_index=#{infoIndex},updated_tm=now() WHERE id=#{id}
+	</update>
+	<insert id="addGoodsInfo" parameterType="GoodsInfo" keyProperty="id">
+		INSERT INTO t_product_info(goods_id,info_type,info_img,info_index,img_width,img_height,created_tm,updated_tm) 
+		VALUES(#{goodsId},#{infoType},#{infoImg},#{infoIndex},#{imgWidth},#{imgHeight},now(),now())
+	</insert>
+	<delete id="delGoodsInfo">
+		DELETE FROM t_product_info WHERE id IN
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+</mapper>

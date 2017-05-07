@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.bxj.mapper.SysMapper">
+
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+	
+	
+	<insert id="addSysUser" parameterType="SysUser" keyProperty="id">
+		insert into t_sys_user(username,password,created_tm) values(#{username},#{password},now())
+	</insert>
+	
+	<select id="findSysUser" resultType="SysUser">
+		select id,username,password,user_status userStatus from t_sys_user
+	</select>
+	
+	<delete id="delSysUser">
+		delete from t_sys_user where id in 
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+	</delete>
+	
+	<update id="updSysUser" parameterType="SysUser">
+		update t_sys_user set user_status=#{userStatus}
+		<if test="password != null and password != ''">,password=#{password} </if>
+		where id=#{id}
+	</update>
+	
+	<select id="findSysUserById" resultType="SysUser" parameterType="int">
+		select id,username,password,user_status userStatus from t_sys_user where id=#{id}
+	</select>
+	
+	<select id="findSysUserByName" resultType="SysUser" parameterType="java.lang.String">
+		SELECT id,username,password,user_status userStatus from t_sys_user where username=#{username}
+	</select>
+	
+	<select id="findSysRole" resultType="SysRole">
+		select id,role_name roleName,role_desc roleDesc from t_sys_role
+	</select>
+	
+	<!-- t_sys_menu -->
+	<insert id="addSysMenu" parameterType="SysMenu" keyProperty="id">
+		insert into t_sys_menu(menu_name,menu_url,menu_type,menu_index,expand,menu_icon,menu_class,parent_id,tree_code,created_tm) 
+		values(#{menuName},#{menuUrl},#{menuType},#{menuIndex},#{expand},#{menuIcon},#{menuClass},#{parentId},#{treeCode},now())
+	</insert>
+	<select id="findSysMenu" resultType="SysMenu">
+		select id,menu_name menuName,menu_url menuUrl,menu_type menuType,menu_index menuIndex,
+			expand,menu_icon menuIcon,menu_class menuClass,parent_id parentId,tree_code treeCode 
+		from t_sys_menu order by tree_code
+	</select>
+	<select id="findSysMenuById" resultType="SysMenu" parameterType="int">
+		select id,menu_name menuName,menu_url menuUrl,menu_type menuType,menu_index menuIndex,
+			expand,menu_icon menuIcon,menu_class menuClass,parent_id parentId,tree_code treeCode 
+		from t_sys_menu where id=#{id}
+	</select>
+	<update id="updSysMenu" parameterType="SysMenu">
+		update t_sys_menu set menu_name=#{menuName},menu_url=#{menuUrl},menu_type=#{menuType},menu_index=#{menuIndex}
+		,expand=#{expand},menu_icon=#{menuIcon},menu_class=#{menuClass},parent_id=#{parentId},tree_code=#{treeCode}
+		where id=#{id}
+	</update>
+	<delete id="delSysMenu">
+		delete from t_sys_menu where id in 
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+	</delete>
+	
+	<select id="findUserSysMenu" resultType="SysMenu" parameterType="string">
+		select a.id,menu_name menuName,menu_url menuUrl,menu_type menuType,menu_index menuIndex,
+			expand,menu_icon menuIcon,menu_class menuClass,parent_id parentId,tree_code treeCode 
+		from t_sys_menu a,t_sys_role_menu b,t_sys_user_role c,t_sys_user d 
+		where a.id = b.menu_id and b.role_id = c.role_id and c.user_id = d.id and a.menu_type>0 and d.username = #{username}
+	</select>
+	
+	
+	<!-- t_sys_role_menu -->
+	<select id="findSysRoleMenu" resultType="SysMenu">
+		select menu_id id from t_sys_role_menu where role_id=#{roleId}
+	</select>
+	
+	<delete id="delSysRoleMenu" parameterType="map">
+		delete from t_sys_role_menu where role_id=#{roleId}
+	</delete>
+	<insert id="addSysRoleMenu" parameterType="map" keyProperty="id">
+		insert into t_sys_role_menu(role_id,menu_id) 
+		values(#{roleId},#{menuId})
+	</insert>
+	
+	<!-- t_sys_user_role -->
+	<select id="findSysUserRole" resultType="SysRole">
+		select role_id id from t_sys_user_role where user_id=#{userId}
+	</select>
+	
+	<delete id="delSysUserRole" parameterType="map">
+		delete from t_sys_user_role where user_id=#{userId}
+	</delete>
+	<insert id="addSysUserRole" parameterType="map" keyProperty="id">
+		insert into t_sys_user_role(user_id,role_id) 
+		values(#{userId},#{roleId})
+	</insert>
+
+	<!-- t_sys_hessian_key -->
+	<select id="findSysHKey" resultType="SysHKey" parameterType="SysHKey">
+		SELECT id,hessian_key hessianKey,class_name className,method_name methodName 
+		FROM t_sys_hessian_key
+		<where>  
+        <if test="hessianKey!=null and hessianKey!=''">  
+        	and hessian_key = #{hessianKey} 
+        </if>
+        </where>
+	</select>
+	<insert id="addSysHKey" parameterType="SysHKey" keyProperty="id">
+		INSERT INTO t_sys_hessian_key(hessian_key,class_name,method_name)
+		VALUES(#{hessianKey},#{className},#{methodName})
+	</insert>
+	<select id="findSysHKeyById" resultType="SysHKey" parameterType="int">
+		SELECT id,hessian_key hessianKey,class_name className,method_name methodName 
+		FROM t_sys_hessian_key WHERE id=#{id}
+	</select>
+	<update id="updSysHKey" parameterType="SysHKey">
+		update t_sys_hessian_key set hessian_key=#{hessianKey},class_name=#{className},method_name=#{methodName}
+		where id=#{id}
+	</update>
+	<delete id="delSysHKey">
+		delete from t_sys_hessian_key where id in 
+		<foreach item="ids" collection="array" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+	</delete>
+
+</mapper>

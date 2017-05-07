@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxj.mapper.ActivityMapper">
+	<resultMap type="ActivityVo" id="resultMap">
+		<result column="activity_id" property="activityId"/>
+		<result column="activity_code" property="activityCode"/>
+		<result column="PRODUCT_NAME" property="productName"/>
+		<result column="PRODUCT_ID" property="productId"/>
+		<result column="PEOPLE_COUNT" property="peopleCount"/>
+		<result column="create_time" property="createTime"/>
+		<result column="start_time" property="startTime"/>
+		<result column="end_time" property="endTime"/>
+		<result column="lottery_code" property="lotteryCode"/>
+		<result column="lottery_time" property="lotteryTime"/>
+		<result column="status" property="status"/>
+		<result column="lotteryStatus" property="lotteryStatus"/>
+	</resultMap>
+	
+	<select id="queryList" resultMap="resultMap">
+		select a.activity_id,a.activity_code,a.product_id,p.product_name,a.price,a.people_count,a.start_time,a.end_time,a.lottery_code,a.lottery_time,a.status,tl.status as lotteryStatus
+		from t_activity a join t_product p
+		on a.product_id = p.product_id
+		left join t_lottery tl
+		on a.activity_id =tl.activity_id
+		where 1=1
+        <if test='productName !=null and productName !=""'>  
+        	and p.product_name like concat(#{productName},'%')
+        </if>
+        <if test="status>-1">
+        	and a.status = #{status}
+        </if>
+	</select>
+	
+	<insert id="initActvity" >
+		insert into t_activity (activity_code,product_id,price,price_pay,people_count,create_time,status,start_time) 
+		select #{activityCode},product_id,price,price_pay,people_count,#{createTime},#{status},#{startTime} from t_product where product_id=#{productId}
+	</insert>
+	
+	
+</mapper>
